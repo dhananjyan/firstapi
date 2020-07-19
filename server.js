@@ -2,8 +2,11 @@ const express = require('express')
 const graphqlHTTP = require('express-graphql').graphqlHTTP;
 const schema = require('./schema/schema')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 const app = express()
+
+app.use(cors())
 
 mongoose.connect(process.env.DBURL || 'mongodb://127.0.0.1:27017/Schedule', { useUnifiedTopology: true, useNewUrlParser: true })
 mongoose.connection.once('open', () => {
