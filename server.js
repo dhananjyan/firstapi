@@ -1,10 +1,20 @@
 const express = require('express')
-const app = express()
-// const router = express.Router()
+const graphqlHTTP = require('express-graphql').graphqlHTTP;
+const schema = require('./schema/schema')
+const mongoose = require('mongoose')
 
-app.get('/', (req, res) => {
-    res.send('Hello Worlds')
+const app = express()
+
+mongoose.connect(process.env.DBURL || 'mongodb://127.0.0.1:27017/Schedule', { useUnifiedTopology: true, useNewUrlParser: true })
+mongoose.connection.once('open', () => {
+    console.log('DB Connected')
 })
-app.listen(process.env.PORT || 3000., () => {
+
+app.use('/graphql', graphqlHTTP({
+    schema,
+    graphiql: true
+}))
+
+app.listen(process.env.PORT || 3000, () => {
     console.log("Server running")
 })
