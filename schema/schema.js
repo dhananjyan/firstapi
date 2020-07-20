@@ -129,6 +129,17 @@ const mutation = new GraphQLObjectType({
                 return user.save()
             }
         },
+        login: {
+            type: UserType,
+            args: {
+                username: { type: GraphQLString },
+                password: { type: GraphQLString }
+            },
+            resolve(parent, args ) {
+                const user = User.findOne({ username: args.username, password: args.password })
+                return  user                       
+            }
+        }
         // addBook: {
         //     type: BookType,
         //     args: {
