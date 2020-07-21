@@ -124,7 +124,7 @@ const mutation = new GraphQLObjectType({
                 let user = new User({
                     username: args.username,
                     password: args.password,
-                    email: args.password
+                    email: args.email
                 })
                 return user.save()
             }
