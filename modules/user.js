@@ -19,5 +19,22 @@ const userSchema = new mongoose.Schema({
         trim: true,
     }
 })
-
+userSchema.post('findOne', function(user, next) {
+    console.log(user)
+    if (!user) {
+        console.log('error')
+       return next(new Error('Authentication failed')) 
+    }
+    return next()
+    // if(error) {
+    //     next(error)
+    // } else {
+    //     console.log(user)
+    //     if (!user) {
+    //         next(new Error('Authentication failed')) 
+    //     } else {
+    //         next()
+    //     }
+    // }
+})
 module.exports = mongoose.model('User', userSchema)
