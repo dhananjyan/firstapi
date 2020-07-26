@@ -1,23 +1,12 @@
+const {
+    GraphQLDateTime
+  } = require('graphql-iso-date')
 const graphql = require('graphql')
 const User = require('../modules/user')
+const Event = require('../modules/event')
 
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLSchema, GraphQLInt } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLSchema, GraphQLInt, GraphQLBoolean } = graphql;
 
-// const BookType = new GraphQLObjectType({
-//     name: 'Book',
-//     fields: () => ({
-//         id: { type: GraphQLID },
-//         name: { type: GraphQLString },
-//         genre: { type: GraphQLString },
-//         author: {
-//             type: AuthorType,
-//             resolve(parent, args) {
-//                 // return _.find(authors, {id: parent.authorId})
-//                 return Book.findById(parent.authorId)
-//             }
-//         }
-//     })
-// })
 
 const UserType = new GraphQLObjectType({
     name: 'User',
@@ -29,42 +18,27 @@ const UserType = new GraphQLObjectType({
     })
 })
 
-// const AuthorType = new GraphQLObjectType({
-//     name: 'Author',
-//     fields: () => ({
-//         id: { type: GraphQLID },
-//         age: { type: GraphQLInt },
-//         name: { type: GraphQLString },
-//         books: {
-//             type: new GraphQLList(BookType),
-//             resolve(parent, args) {
-//                 // return _.filter(books, {authorId: parent.id })
-//                 return Author.find({authorId: parent.id})
-//             }
-//         }
-//     })
-// })
-
+  
+const EventType = new GraphQLObjectType({
+    name: 'Event',
+    fields: () => ({
+        id: { type: GraphQLID },
+        title: { type: GraphQLString },
+        start: { type: GraphQLDateTime },
+        end: { type: GraphQLDateTime },
+        allDay: { type: GraphQLBoolean },
+        provider: { type: GraphQLString },
+        user: {
+            type: UserType,
+            resolve(parent, args) {
+                return Event.findById(parent.userId)
+            }
+        }
+    })
+})
 const rootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
-        // book: {
-        //     type: BookType,
-        //     args: { id: {type: GraphQLID}},
-        //     resolve(parent, args) {
-        //         //code to get the data from db/other source\
-        //         // return _.find(books, {id: args.id})
-        //         return Book.findById(args.id)
-        //     }
-        // },
-        // author: {
-        //     type: AuthorType,
-        //     args: { id: { type: GraphQLID}},
-        //     resolve(parent,args) {
-        //         // return _.find(authors, {id: args.id})
-        //         return Author.findById(args.id)
-        //     }
-        // },
         user: {
             type: UserType,
             args: { id: { type: GraphQLID }},
@@ -79,40 +53,26 @@ const rootQuery = new GraphQLObjectType({
                 return User.find({})
             }
         },
-        // books: {
-        //     type: new GraphQLList(BookType),
-        //     resolve(parent, args) {
-        //         // return books
-        //         return Book.find({})
-        //     }
-        // },
-        // authors: {
-        //     type: new GraphQLList(AuthorType),
-        //     resolve(parent, args) {
-        //         // return authors
-        //         return Author.find({})
-        //     }
-        // }
+        event: {
+            type: EventType,
+            args: { id: { type: GraphQLID }},
+            resolve(parent, args) {
+                return Event.findById(args.id)
+            }
+        },
+        events: {
+            type: new GraphQLList(EventType),
+            resolve(parent, args) {
+                // return books
+                return Event.find({})
+            }
+        },
     }
 })
 
 const mutation = new GraphQLObjectType({
     name: 'mutation',
     fields: {
-        // addAuthor: {
-        //     type: AuthorType,
-        //     args: {
-        //         name: { type: GraphQLString },
-        //         age: { type: GraphQLInt },
-        //     },
-        //     resolve(parent, args) {
-        //         let author = new Author({
-        //             name: args.name,
-        //             age: args.age
-        //         })
-        //         return author.save()
-        //     }
-        // },
         addUser:{
             type: UserType,
             args: {
@@ -139,23 +99,29 @@ const mutation = new GraphQLObjectType({
                 const user = User.findOne({ username: args.username, password: args.password })
                 return  user                       
             }
-        }
-        // addBook: {
-        //     type: BookType,
-        //     args: {
-        //         name: { type: GraphQLString },
-        //         genre: { type: GraphQLString },
-        //         authorId: { type: GraphQLID }
-        //     },
-        //     resolve(parent, args) {
-        //         let book = new Book({
-        //             name: args.name,
-        //             genre: args.genre,
-        //             authorId: args.authorId
-        //         })
-        //         return book.save()
-        //     }
-        // }
+        },
+        addEvent: {
+            type: EventType,
+            args: {
+                title: { type: GraphQLString },
+                start: { type: GraphQLDateTime },
+                end: { type: GraphQLDateTime },
+                allDay: { type: GraphQLBoolean },
+                provider: { type: GraphQLString },
+                userId: { type: GraphQLID }
+            },
+            resolve(parent,args) {
+                let event = new Event({
+                    title: args.title,
+                    start: args.start,
+                    end: args.end,
+                    allDay: args.allDay,
+                    provider: args.provider,
+                    userId: args.userId
+                })
+                return event.save()
+            }
+        },
     }
 })
 

@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
     }
 })
 userSchema.post('findOne', function(user, next) {
-    console.log(user)
     if (!user) {
         console.log('error')
        return next(new Error('Authentication failed')) 
