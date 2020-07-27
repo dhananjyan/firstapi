@@ -219,6 +219,16 @@ const mutation = new GraphQLObjectType({
                 })
                 return category.save()
             }
+        },
+        providerLogin: {
+            type: ProviderType,
+            args: {
+                username: { type: GraphQLString },
+                password: { type: GraphQLString }
+            },
+            resolve(parent, args ) {
+                return Provider.findOne({ username: args.username, password: args.password })
+            }
         }
     }
 })

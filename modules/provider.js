@@ -38,4 +38,11 @@ const providerSchema = new mongoose.Schema({
         required: true
     },
 })
+
+providerSchema.post('findOne', function(provider, next) {
+    if (!provider) {
+       return next(new Error('Authentication failed')) 
+    }
+    return next()
+})
 module.exports = mongoose.model('Provider', providerSchema)
