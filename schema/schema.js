@@ -24,7 +24,13 @@ const CategoryType = new GraphQLObjectType({
     name: 'Categoroy',
     fields: () => ({
         id: { type: GraphQLID },
-        name: { type: GraphQLString }
+        name: { type: GraphQLString },
+        providers: {
+            type: new GraphQLList(ProviderType),
+            resolve(parent, args) {
+                return Provider.find({ categoryId: parent.id })
+            }
+        }
     })
 })
 
@@ -39,7 +45,7 @@ const ProviderType = new GraphQLObjectType({
         category: {
             type: CategoryType,
             resolve(parent, args) {
-                Provider.findById(parent.categoryId)
+                return Category.findById(parent.categoryId)
             }
         },
         telephone: { type: GraphQLString },
