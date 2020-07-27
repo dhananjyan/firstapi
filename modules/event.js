@@ -17,14 +17,15 @@ const eventSchema = new mongoose.Schema({
     },
     allDay: {
         type: Boolean,
+        default: false
     },
-    provider: {
-        type: String,
-        required: true
+    providerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Provider'
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'User'
     }
 })

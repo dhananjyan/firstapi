@@ -61,11 +61,16 @@ const EventType = new GraphQLObjectType({
         start: { type: GraphQLDateTime },
         end: { type: GraphQLDateTime },
         allDay: { type: GraphQLBoolean },
-        provider: { type: GraphQLString },
+        provider: {
+            type: ProviderType,
+            resolve(parent, args) {
+                return Provider.findById(parent.providerId)
+            }
+        },
         user: {
             type: UserType,
             resolve(parent, args) {
-                return Event.findById(parent.userId)
+                return User.findById(parent.userId)
             }
         }
     })
@@ -85,20 +90,6 @@ const rootQuery = new GraphQLObjectType({
             resolve(parent, args) {
                 // return books
                 return User.find({})
-            }
-        },
-        event: {
-            type: EventType,
-            args: { id: { type: GraphQLID }},
-            resolve(parent, args) {
-                return Event.findById(args.id)
-            }
-        },
-        events: {
-            type: new GraphQLList(EventType),
-            resolve(parent, args) {
-                // return books
-                return Event.find({})
             }
         },
         category: {
@@ -129,6 +120,20 @@ const rootQuery = new GraphQLObjectType({
                 return Provider.find({})
             }
         },
+        event: {
+            type: EventType,
+            args: { id: { type: GraphQLID }},
+            resolve(parent, args) {
+                return Event.findById(args.id)
+            }
+        },
+        events: {
+            type: new GraphQLList(EventType),
+            args: { providerId: { type: GraphQLID }},
+            resolve(parent, args) {
+                return Event.find({ providerId: args.providerId })
+            }
+        }
     }
 })
 
