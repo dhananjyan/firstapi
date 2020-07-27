@@ -1,3 +1,6 @@
+const {
+    GraphQLDateTime
+  } = require('graphql-iso-date')
 const graphql = require('graphql')
 const User = require('../modules/user')
 const Event = require('../modules/event')
@@ -55,8 +58,8 @@ const EventType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         title: { type: GraphQLString },
-        start: { type: GraphQLString },
-        end: { type: GraphQLString },
+        start: { type: GraphQLDateTime },
+        end: { type: GraphQLDateTime },
         allDay: { type: GraphQLBoolean },
         provider: {
             type: ProviderType,
@@ -130,6 +133,12 @@ const rootQuery = new GraphQLObjectType({
             resolve(parent, args) {
                 return Event.find({ providerId: args.providerId })
             }
+        },
+        allEvents: {
+            type: new GraphQLList(EventType),
+            resolve(parent, args) {
+                return Event.find({})
+            }
         }
     }
 })
@@ -192,10 +201,10 @@ const mutation = new GraphQLObjectType({
             type: EventType,
             args: {
                 title: { type: GraphQLString },
-                start: { type: GraphQLString },
-                end: { type: GraphQLString },
+                start: { type: GraphQLDateTime },
+                end: { type: GraphQLDateTime },
                 allDay: { type: GraphQLBoolean },
-                provider: { type: GraphQLString },
+                providerId: { type: GraphQLID },
                 userId: { type: GraphQLID }
             },
             resolve(parent,args) {
@@ -204,7 +213,7 @@ const mutation = new GraphQLObjectType({
                     start: args.start,
                     end: args.end,
                     allDay: args.allDay,
-                    provider: args.provider,
+                    providerId: args.providerId,
                     userId: args.userId
                 })
                 return event.save()
