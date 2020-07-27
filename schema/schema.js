@@ -1,6 +1,3 @@
-const {
-    GraphQLDateTime
-  } = require('graphql-iso-date')
 const graphql = require('graphql')
 const User = require('../modules/user')
 const Event = require('../modules/event')
@@ -58,8 +55,8 @@ const EventType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         title: { type: GraphQLString },
-        start: { type: GraphQLDateTime },
-        end: { type: GraphQLDateTime },
+        start: { type: GraphQLString },
+        end: { type: GraphQLString },
         allDay: { type: GraphQLBoolean },
         provider: {
             type: ProviderType,
@@ -195,8 +192,8 @@ const mutation = new GraphQLObjectType({
             type: EventType,
             args: {
                 title: { type: GraphQLString },
-                start: { type: GraphQLDateTime },
-                end: { type: GraphQLDateTime },
+                start: { type: GraphQLString },
+                end: { type: GraphQLString },
                 allDay: { type: GraphQLBoolean },
                 provider: { type: GraphQLString },
                 userId: { type: GraphQLID }
