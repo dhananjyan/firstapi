@@ -24,17 +24,18 @@ const providerSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    connectInfo: {
-        tel: {
-            type: Number,
-            required: true
-        },
-        email: [String],
-        address: {
-            city: String,
-            street: String,
-            houseNumber: String
-        }
-    }
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category'
+    },
+    tel: {
+        type: Number,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
 })
 module.exports = mongoose.model('Provider', providerSchema)
