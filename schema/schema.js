@@ -6,6 +6,7 @@ const User = require('../modules/user')
 const Event = require('../modules/event')
 const Category = require('../modules/category')
 const Provider = require('../modules/provider')
+const { eventNames } = require('../modules/event')
 
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLSchema, GraphQLInt, GraphQLBoolean } = graphql;
 
@@ -49,7 +50,13 @@ const ProviderType = new GraphQLObjectType({
             }
         },
         telephone: { type: GraphQLString },
-        email: { type: GraphQLString }
+        email: { type: GraphQLString },
+        events: {
+            type: new GraphQLList(EventType),
+            resolve(parent, args) {
+                return Event.find({ providerId: parent.id })
+            }
+        }
     })
 })
   
