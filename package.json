@@ -16,7 +16,7 @@
     "graphql": "^15.3.0",
     "graphql-iso-date": "^3.6.1",
     "graphql-upload": "^11.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.9.25"
   },
   "devDependencies": {
